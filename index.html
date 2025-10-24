@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Heii Meii 💌</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#f8a8d8;
+  --hot:#d63384;
+  --bg-grad: linear-gradient(135deg,#ffe4ec,#e0d4ff,#d0f0ff);
+  --card-bg: rgba(255,255,255,.98);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Poppins",sans-serif;
+  background:var(--bg-grad);
+  color:var(--hot);
+  -webkit-font-smoothing:antialiased;
+  overflow:auto; /* page scroll allowed */
+}
+
+/* Page + card */
+.page{min-height:100vh;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;opacity:0;transition:opacity .6s}
+.page.show{display:flex;opacity:1}
+.card{
+  width:92%;
+  max-width:560px;
+  background:var(--card-bg);
+  border:4px solid var(--pink);
+  border-radius:22px;
+  padding:18px;
+  box-shadow:0 12px 36px rgba(0,0,0,.08);
+  position:relative;
+  overflow:visible;
+}
+
+/* Header */
+.header{margin-bottom:6px;text-align:center}
+.header h2{margin:0;font-size:22px;font-weight:800}
+.header p{margin:8px 0 0 0;color:#d63384;font-weight:600}
+
+/* PIN page (original look) */
+.pin-row{display:flex;justify-content:center;margin-top:8px}
+input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-radius:12px;text-align:center;outline:none}
+.btn{margin-top:12px;padding:10px 16px;border-radius:12px;border:none;background:var(--pink);color:#fff;font-weight:600;cursor:pointer}
+.btn:hover{transform:scale(1.03);background:var(--hot)}
+
+/* Music button (cute circle) */
+.music-btn{
+  position:absolute; top:14px; right:18px;
+  width:54px; height:54px; border-radius:50%;
+  background:var(--pink); color:#fff; border:none;
+  display:flex;align-items:center;justify-content:center;font-size:20px; cursor:pointer;
+  box-shadow:0 8px 20px rgba(214,51,132,0.08);
+}
+.music-btn.playing{background:var(--hot)}
+
+/* Slider: strict 1:1 box */
+.slider-container{
+  width:100%; aspect-ratio:1/1; border-radius:16px;
+  border:3px solid var(--pink); background:#fff; overflow:hidden; margin:14px auto 6px;
+  box-shadow:0 8px 28px rgba(0,0,0,0.06);
+}
+.slider{width:100%;height:100%;position:relative}
+.slide{
+  position:absolute;inset:0;opacity:0;transition:opacity .45s ease;display:flex;align-items:center;justify-content:center;padding:0;
+}
+.slide.active{opacity:1}
+.slide img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px}
+
+/* two-photo slide */
+.slide.double{display:flex;gap:8px;padding:8px}
+.slide.double img{width:50%;height:100%;object-fit:cover;border-radius:10px}
+@media(max-width:520px){ .slide.double{flex-direction:column}.slide.double img{width:100%;height:50%} }
+
+/* closing (full box) */
+.slide.closing{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#ff9ad6,#ffd6a5);color:#fff;padding:0;margin:0;border-radius:0}
+.closing-inner{padding:28px 20px;text-align:center;width:100%}
+.closing-inner h3{font-size:30px;margin:0 0 6px 0;font-weight:800}
+.closing-inner p{margin:0;color:rgba(255,255,255,0.95);line-height:1.5}
+
+/* centered emoji that appears briefly */
+.center-emoji{
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(.6);
+  font-size:56px;opacity:0;transition:transform .25s ease,opacity .25s;
+  pointer-events:none;
+}
+.center-emoji.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+/* Dots + description below */
+.controls-wrapper{width:100%;display:flex;flex-direction:column;align-items:center;margin-top:8px;gap:10px}
+.controls{display:flex;gap:8px;justify-content:center}
+.dot{width:12px;height:12px;border-radius:50%;background:#f8c8e8;cursor:pointer;transition:transform .12s,background .12s}
+.dot.active{background:var(--hot);transform:scale(1.3)}
+.desc-below{width:92%;text-align:left;color:var(--hot);font-weight:600;font-size:16px;line-height:1.6;margin:0 auto}
+
+/* Floating emojis (throttled) */
+.falling-emoji{position:fixed;top:-8vh;pointer-events:none;font-size:18px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(120vh) rotate(360deg);opacity:0}}
+
+/* Fixed (outside) arrows — cute style, not obtrusive */
+.fixed-arrow{
+  position:fixed; width:54px; height:54px; border-radius:50%;
+  background:rgba(255,255,255,0.96); border:3px solid var(--pink);
+  display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--hot);
+  box-shadow:0 12px 28px rgba(214,51,132,0.06); cursor:pointer; z-index:120;
+  transition:transform .15s,opacity .15s;
+}
+.fixed-arrow:hover{transform:scale(1.05)}
+#fixedPrev{left:18px;bottom:18px}
+#fixedNext{right:18px;bottom:18px}
+
+/* reduce size on small screens so they don't block content on edges */
+@media(max-width:520px){
+  .fixed-arrow{width:44px;height:44px;font-size:18px;border-width:2px}
+  .card{padding-bottom:110px} /* extra space so desc readable */
+  .desc-below{font-size:15px}
+}
+
+/* subtle rounded page container look */
+.page-wrap{padding:28px 0}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+  <!-- PAGE 1 (PIN) -->
+  <div id="page1" class="page show">
+    <div class="card" style="max-width:480px">
+      <h2>Masukkan PIN</h2>
+      <div class="pin-row"><input id="pinInput" class="pin" type="password" maxlength="4" placeholder="****" /></div>
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button class="btn" onclick="checkPin()">Cek PIN</button>
+        <button id="playBtn" class="btn" onclick="playAndNext()" style="display:none">Putar Musik & Masuk</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div id="page2" class="page">
+    <div class="card">
+      <div class="header">
+        <h2>Dear Meisya 💌</h2>
+        <p>Heii Meii, ini web kecil buatan aku sendiri, isinya kenangan dan cerita lucu tentang kita 💕</p>
+      </div>
+
+      <button class="music-btn" id="musicBtn" onclick="toggleMusic(music1,this)" aria-label="Putar musik">🎵</button>
+
+      <div class="slider-container" id="sliderContainer" aria-roledescription="carousel">
+        <div class="slider" id="slider">
+          <div class="slide active"><img src="img1.jpeg" alt="Foto 1" loading="lazy"></div>
+
+          <div class="slide double">
+            <img src="img2a.jpeg" alt="Foto 2a" loading="lazy">
+            <img src="img2b.jpeg" alt="Foto 2b" loading="lazy">
+          </div>
+
+          <div class="slide"><img src="img3.jpeg" alt="Foto 3" loading="lazy"></div>
+          <div class="slide"><img src="img4.jpeg" alt="Foto 4" loading="lazy"></div>
+
+          <div class="slide double">
+            <img src="img5a.jpeg" alt="Foto 5a" loading="lazy">
+            <img src="img5b.jpeg" alt="Foto 5b" loading="lazy">
+          </div>
+
+          <div class="slide double">
+            <img src="img6a.jpeg" alt="Foto 6a" loading="lazy">
+            <img src="img6b.jpeg" alt="Foto 6b" loading="lazy">
+          </div>
+
+          <!-- closing (full) -->
+          <div class="slide closing">
+            <div class="closing-inner">
+              <h3>Makasihh yaahh meii ❤️</h3>
+              <p>udahh mauu bukaa web inii yahh dan udah mauu bacaa sampai akhir,  akuu bikin web inii khusus buat meisyaa dan niat akuu untuk ngehibur meisyaa bahkan kalau bisa bikin kamuu bahagia, maaf yahh mungkinn ini masih kurang menarik tapii akuu bust inii just only for YOUUUUU 🫶🫶❤️❤️</p>
+            </div>
+            <div id="centerEmoji" class="center-emoji">🥰</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- dots + description below -->
+      <div class="controls-wrapper">
+        <div class="controls" id="dots"></div>
+        <div id="descBox" class="desc-below"></div>
+      </div>
+
+      <div style="height:6px"></div>
+      <div style="font-size:12px;color:#666;position:relative">22-10-2025 Yogyakarta</div>
+    </div>
+  </div>
+</div>
+
+<!-- Fixed arrows placed OUTSIDE the card / page corners -->
+<button id="fixedPrev" class="fixed-arrow" aria-label="Sebelumnya">⟵</button>
+<button id="fixedNext" class="fixed-arrow" aria-label="Selanjutnya">⟶</button>
+
+<!-- audio -->
+<audio id="music1" preload="auto" loop><source src="lagu1.mp3" type="audio/mpeg"></audio>
+
+<script>
+/* PIN logic (original) */
+const correctPin = "1704";
+function checkPin(){
+  const val = document.getElementById('pinInput').value.trim();
+  if(val === correctPin){
+    document.getElementById('playBtn').style.display = 'inline-block';
+    alert("PIN benar! Klik 'Putar Musik & Masuk'.");
+  } else {
+    alert("PIN salah, coba lagi ya 💕");
+    document.getElementById('playBtn').style.display = 'none';
+  }
+}
+function playAndNext(){
+  music1.play().catch(()=>{});
+  switchPage(2);
+}
+function switchPage(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
+  document.getElementById('page'+n).classList.add('show');
+  createHeartsBurst();
+}
+
+/* Slider basics */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dotsContainer = document.getElementById('dots');
+const descBox = document.getElementById('descBox');
+let current = 0;
+const descriptions = [
+  "Kamu inget ini kan Meii, itu awal banget kita deket hihi ☺️ waktu aku nawarin nemenin kamu liat komang, untung kamu mau hehehe 💕",
+  "Waktu ini lucu banget Meii, dua foto bareng yang bikin ngakak tiap liat 😆",
+  "Kamu masih inget waktu itu kamu jadi MC di wisudaan aku? Sumpah kamu lucu banget waktu bilang bajumu kebesaran 🤣 dan suaramu cantik banget 🥰",
+  "Yang ini photobox pertama kitaaa! Kita bingung pose gimana 😭 tapi lucu banget hasilnya 😍",
+  "iyaa meii inii jugaa kamuu masih ingett kann pas kitaa awal nonton sepak bolaa ituu pss sleman ituuu habis ituu meisyaa ngiranya akuu cape padahal mah engga meii aku cumann......💖",
+  "Ini pas konser Origin! Aku masih inget kamu jatuh gara-gara orang ganggu, aku langsung kesel banget 😠 tapi kamu malah nenangin aku 😚",
+  "" // penutup
+];
+
+// generate dots
+slides.forEach((_,i)=>{
+  const d = document.createElement('span');
+  d.className = 'dot' + (i===0 ? ' active' : '');
+  d.addEventListener('click', ()=> show(i));
+  dotsContainer.appendChild(d);
+});
+const dots = Array.from(document.querySelectorAll('.dot'));
+
+function show(i){
+  if(i<0) i = slides.length - 1;
+  if(i>=slides.length) i = 0;
+  slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
+  dots.forEach((d,idx)=> d.classList.toggle('active', idx===i));
+  descBox.textContent = descriptions[i] || '';
+  // closing slide: hide desc and show center emoji briefly
+  const centerEmoji = document.getElementById('centerEmoji');
+  if(slides[i].classList.contains('closing')){
+    descBox.style.display = 'none';
+    centerEmoji.classList.remove('show');
+    setTimeout(()=> centerEmoji.classList.add('show'), 40);
+    setTimeout(()=> centerEmoji.classList.remove('show'), 600);
+    createClosingBurst();
+  } else {
+    descBox.style.display = 'block';
+  }
+  current = i;
+}
+function next(){ show((current+1)%slides.length) }
+function prev(){ show((current-1+slides.length)%slides.length) }
+
+// hook buttons (fixed outside)
+document.getElementById('fixedNext').addEventListener('click', next);
+document.getElementById('fixedPrev').addEventListener('click', prev);
+
+// keyboard
+document.addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight') next();
+  if(e.key==='ArrowLeft') prev();
+});
+
+// init
+show(0);
+
+/* Falling emoji (throttled) */
+let activeEmojis = 0;
+const MAX_DESKTOP = 8, MAX_MOBILE = 4;
+const isMobile = window.innerWidth <= 520 || /Mobi|Android/i.test(navigator.userAgent);
+const MAX_EMOJIS = isMobile ? MAX_MOBILE : MAX_DESKTOP;
+const SPAWN_INTERVAL = isMobile ? 1400 : 900;
+let spawnTimer = null;
+function spawnFallingEmoji(){
+  if(activeEmojis >= MAX_EMOJIS) return;
+  activeEmojis++;
+  const el = document.createElement('div');
+  el.textContent = Math.random()>0.6? '✨':'💖';
+  el.className = 'falling-emoji';
+  el.style.left = (5 + Math.random()*90) + '%';
+  el.style.fontSize = (12 + Math.random()*20) + 'px';
+  const dur = (3 + Math.random()*2);
+  el.style.animationDuration = dur + 's';
+  document.body.appendChild(el);
+  setTimeout(()=>{ el.remove(); activeEmojis--; }, (dur*1000)+200);
+}
+function startEmojis(){ if(spawnTimer) return; spawnTimer = setInterval(spawnFallingEmoji, SPAWN_INTERVAL); }
+function stopEmojis(){ if(!spawnTimer) return; clearInterval(spawnTimer); spawnTimer = null; }
+if(!isMobile) startEmojis(); else setTimeout(startEmojis, 1200);
+function createClosingBurst(){ for(let i=0;i<10;i++) setTimeout(spawnFallingEmoji, i*80); }
+function createHeartsBurst(){ for(let i=0;i<12;i++){ setTimeout(()=>{ const h=document.createElement('div'); h.textContent='💖'; h.style.position='fixed'; h.style.left=(10+Math.random()*80)+'%'; h.style.top=(30+Math.random()*40)+'%'; h.style.fontSize=(12+Math.random()*20)+'px'; h.style.opacity='0'; h.style.transition='all .6s ease'; document.body.appendChild(h); setTimeout(()=>{ h.style.opacity='1'; h.style.transform='translateY(-50px) scale(1.02)'; }, 80*i); setTimeout(()=>h.remove(), 1200 + i*40); }, i*60); } }
+
+/* music toggle */
+const music1 = document.getElementById('music1');
+function toggleMusic(audio, btn){
+  if(audio.paused){ audio.play().catch(()=>{}); btn.classList.add('playing'); }
+  else{ audio.pause(); btn.classList.remove('playing'); }
+}
+</script>
+</body>
+</html>
