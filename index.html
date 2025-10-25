@@ -78,9 +78,11 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
   width:100%; height:100%; object-fit:cover; display:block;
 }
 
-/* closing slide */
+
+
+
 .slide.closing{
-  position:absolute;
+  position:relative !important;
   inset:0;
   display:flex;
   flex-direction:column;
@@ -90,7 +92,12 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
   color:#fff;
   padding:0;
   margin:0;
+  opacity: 1 !important;
+  z-index: 1 !important;
   border-radius:0;
+}
+.slide:not(.closing) {
+  z-index: 2 !important;
 }
 .closing-inner{
   width:100%;
