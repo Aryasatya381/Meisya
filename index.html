@@ -59,7 +59,6 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 }
 .music-btn.playing{background:var(--hot)}
 
-/* Slider: strict 1:1 box */
 .slider-container{
   width:100%; aspect-ratio:1/1; border-radius:16px;
   border:3px solid var(--pink); background:#fff; overflow:hidden; margin:14px auto 6px;
@@ -72,10 +71,9 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 .slide.active{opacity:1}
 .slide img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px}
 
-/* two-photo slide */
 .slide.double{display:flex;gap:8px;padding:8px}
 .slide.double img{width:50%;height:100%;object-fit:cover;border-radius:10px}
-@media(max-width:520px){ .slide.double{flex-direction:column}.slide.double img{width:100%;height:50%} }
+@media(max-width:520px){ .slide.double{flex-direction:column}.slide.double img{width:50%;height:100%} }
 
 /* closing (full box) */
 .slide.closing{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#ff9ad6,#ffd6a5);color:#fff;padding:0;margin:0;border-radius:0}
