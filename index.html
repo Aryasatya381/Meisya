@@ -58,20 +58,17 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 /* single image */
 .slide img { width:100%; height:100%; object-fit:cover; border-radius:12px; display:block }
 
-/* .double: two portrait 1:1 images side-by-side */
+/* double image (kiri kanan) */
 .slide.double{
   display:flex;
-  gap:0;
   align-items:stretch;
   justify-content:space-between;
   padding:0;
 }
 .slide.double .img-box{
   width:50%;
-  aspect-ratio:1/1;
+  height:100%;
   overflow:hidden;
-  border-radius:0; 
-  background:#eee;
 }
 .slide.double .img-box img{
   width:100%; height:100%; object-fit:cover; display:block;
@@ -103,72 +100,40 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 .closing-inner h3{ font-size:30px; margin:0 0 8px 0; font-weight:800 }
 .closing-inner p{ margin:0; color:rgba(255,255,255,0.95); line-height:1.6; word-break:break-word; }
 
-/* centered emoji */
 .center-emoji{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.6); font-size:56px; opacity:0; transition:transform .25s ease,opacity .25s; pointer-events:none; }
 .center-emoji.show{ opacity:1; transform:translate(-50%,-50%) scale(1) }
 
-/* dots + desc */
 .controls-wrapper{ width:100%; display:flex; flex-direction:column; align-items:center; margin-top:12px; gap:10px }
 .controls{ display:flex; gap:8px; justify-content:center }
 .dot{ width:12px; height:12px; border-radius:50%; background:#f8c8e8; cursor:pointer; transition:transform .12s,background .12s }
 .dot.active{ background:var(--hot); transform:scale(1.3) }
 .desc-below{ width:92%; text-align:left; color:var(--hot); font-weight:600; font-size:16px; line-height:1.6; margin:0 auto }
 
-/* Floating emojis */
 .falling-emoji{ position:fixed; top:-8vh; pointer-events:none; font-size:18px; animation:fall linear forwards}
 @keyframes fall{ to{ transform:translateY(120vh) rotate(360deg); opacity:0 } }
 
-/* fixed arrows */
 .fixed-arrow{ position:fixed; width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,0.96); border:3px solid var(--pink); display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--hot); box-shadow:0 12px 28px rgba(214,51,132,0.06); cursor:pointer; z-index:120; transition:transform .15s,opacity .15s; }
 .fixed-arrow:hover{ transform:scale(1.05) }
 #fixedPrev{ left:18px; bottom:18px }
 #fixedNext{ right:18px; bottom:18px }
 
-/* MOBILE ADJUSTMENTS */
 @media(max-width:520px){
   .card{ padding-bottom:120px }
   .desc-below{ font-size:15px }
   .fixed-arrow{ width:44px; height:44px; font-size:18px; border-width:2px }
 }
 
-/* helper */
 .hidden{ display:none !important }
 
-/* small responsive canvas */
 #flowerCanvas{ max-width:100%; height:auto; display:block; margin:0 auto; cursor:default; transition:transform .25s ease; }
 #flowerCanvas:hover{ transform:scale(1.02); }
 
-/* === Tambahan: Slider lebih responsif di HP === */
+/* Responsif tambahan agar slide tetap 1:1 di semua layar */
 @media (max-width: 600px) {
-  .slider-container {
-    width: 100%;
-    aspect-ratio: auto;
-    border-width: 2px;
-    margin: 10px auto;
-  }
-
-  .slide img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-    border-radius: 12px;
-  }
-
-  .slide.double {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .slide.double .img-box {
-    width: 50%;
-    aspect-ratio: auto;
-  }
-
-  .slide.double .img-box img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
+  .slider-container { width: 100%; aspect-ratio: 1/1; }
+  .slide.double { flex-direction: row; }
+  .slide.double .img-box { width: 50%; height: 100%; }
+  .slide.double .img-box img { object-fit: cover; }
 }
 </style>
 </head>
