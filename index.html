@@ -40,7 +40,17 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 .music-btn.playing{background:var(--hot)}
 
 /* Slider container (always square) */
-.slider-container{ width:100%; aspect-ratio:1/1; border-radius:16px; border:3px solid var(--pink); background:#fff; overflow:hidden; margin:14px auto 6px; box-shadow:0 8px 28px rgba(0,0,0,0.06); position:relative; }
+.slider-container{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:16px;
+  border:3px solid var(--pink);
+  background:#fff;
+  overflow:hidden;
+  margin:14px auto 6px;
+  box-shadow:0 8px 28px rgba(0,0,0,0.06);
+  position:relative;
+}
 .slider{width:100%;height:100%;position:relative}
 .slide{position:absolute;inset:0;opacity:0;transition:opacity .45s ease;display:flex;align-items:center;justify-content:center;padding:0}
 .slide.active{opacity:1}
@@ -48,10 +58,25 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 /* single image */
 .slide img { width:100%; height:100%; object-fit:cover; border-radius:12px; display:block }
 
-/* .double: two portrait 1:1 images side-by-side inside the square container */
-.slide.double{ display:flex; gap:10px; align-items:center; justify-content:center; padding:12px; }
-.slide.double .img-box{ width:48%; aspect-ratio:1/1; overflow:hidden; border-radius:12px; background:#eee; }
-.slide.double .img-box img{ width:100%; height:100%; object-fit:cover; display:block }
+/* .double: two portrait 1:1 images side-by-side inside the square container
+   -> FULL left & right (each 50%), no inner rounded corners so they look edge-to-edge */
+.slide.double{
+  display:flex;
+  gap:0;
+  align-items:stretch;
+  justify-content:space-between;
+  padding:0;
+}
+.slide.double .img-box{
+  width:50%;
+  aspect-ratio:1/1;
+  overflow:hidden;
+  border-radius:0; /* inner boxes flush to each other */
+  background:#eee;
+}
+.slide.double .img-box img{
+  width:100%; height:100%; object-fit:cover; display:block;
+}
 
 /* closing slide: FULL BOX left-right (edge-to-edge inside slider container) */
 .slide.closing{
@@ -65,7 +90,7 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
   color:#fff;
   padding:0;
   margin:0;
-  border-radius:0; /* let container handle corner radius */
+  border-radius:0; /* container has rounded corners */
 }
 /* ensure closing content sits flush left-right but with comfortable inner padding */
 .closing-inner{
@@ -89,7 +114,7 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 .desc-below{ width:92%; text-align:left; color:var(--hot); font-weight:600; font-size:16px; line-height:1.6; margin:0 auto }
 
 /* Floating emojis */
-.falling-emoji{ position:fixed; top:-8vh; pointer-events:none; font-size:18px; animation:fall linear forwards }
+.falling-emoji{ position:fixed; top:-8vh; pointer-events:none; font-size:18px; animation:fall linear forwards}
 @keyframes fall{ to{ transform:translateY(120vh) rotate(360deg); opacity:0 } }
 
 /* fixed outside arrows */
@@ -102,18 +127,21 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 @media(max-width:520px){
   .card{ padding-bottom:120px } /* room for description / arrows */
   .desc-below{ font-size:15px }
-  /* mobile grid: make slider a grid so .double shows left-right portrait 1:1 */
+  /* mobile grid: make slider a grid so .double shows left-right portrait 1:1 inside the square */
   .slider{
     display:grid;
     grid-template-columns: 1fr 1fr;
     grid-auto-rows: 1fr;
-    gap:8px;
-    padding:8px;
+    gap:0; /* double should be edge-to-edge */
+    padding:0;
     align-items:stretch;
+    height:100%;
   }
-  .slide{ position:relative; opacity:1 !important; transition:none; border-radius:12px; overflow:hidden; height:100%; }
-  .slide.double{ display:flex; padding:0; gap:8px }
-  .slide.double .img-box{ width:48%; } /* aspect-ratio keeps them square */
+  /* make each slide a grid cell */
+  .slide{ position:relative; opacity:1 !important; transition:none; border-radius:0; overflow:hidden; height:100%; }
+  /* keep .double as side-by-side (two img-box inside grid cell) */
+  .slide.double{ display:flex; padding:0; gap:0; }
+  .slide.double .img-box{ width:50%; } /* aspect-ratio keeps them square */
   /* closing slide should span full width inside grid */
   .slide.closing{ grid-column:1 / -1; height:auto; display:flex; align-items:center; justify-content:center; padding:0; border-radius:12px; }
   .slide.closing .closing-inner{ padding:20px 16px }
@@ -188,7 +216,7 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
       </div>
     </div>
 
-    <!-- dots + description below -->
+    <!-- dots + description -->
     <div class="controls-wrapper">
       <div class="controls" id="dots"></div>
       <div id="descBox" class="desc-below"></div>
@@ -241,11 +269,14 @@ const descriptions = [
   "Yang ini photobox pertama kitaaa! Kita bingung pose gimana 😭 tapi lucu banget hasilnya 😍",
   "iyaa meii inii jugaa kamuu masih ingett kann pas kitaa awal nonton sepak bolaa ituu pss sleman ituuu habis ituu meisyaa ngiranya akuu cape padahal mah engga meii aku cumann......💖",
   "Ini pas konser Origin! Aku masih inget kamu jatuh gara-gara orang ganggu, aku langsung kesel banget 😠 tapi kamu malah nenangin aku 😚",
-  "" // penutup
+  "" // penutup (closing)
 ];
 
-// generate dots for main slides (exclude final closing from dots)
-const mainCount = slides.length - 1;
+// We'll allow navigation across all slides INCLUDING the closing slide.
+const totalSlides = slides.length;        // includes closing
+const mainCount = totalSlides - 1;        // exclude closing for dot generation
+
+// generate dots for main slides only
 for(let i=0;i<mainCount;i++){
   const d = document.createElement('span');
   d.className = i===0 ? 'dot active' : 'dot';
@@ -255,47 +286,60 @@ for(let i=0;i<mainCount;i++){
 const dots = Array.from(document.querySelectorAll('.dot'));
 
 function show(i){
-  // Desktop behavior: single slide mode
+  // normalize index to allow reaching closing (index === totalSlides - 1)
+  if(i < 0) i = totalSlides - 1;
+  if(i >= totalSlides) i = 0;
+
+  // Desktop: single-slide behavior
   if(window.innerWidth > 520){
-    if(i<0) i = slides.length - 1;
-    if(i>=slides.length) i = 0;
     slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
+    // update dots highlight: only for main slides
     dots.forEach((d,idx)=> d.classList.toggle('active', idx===i));
-    descBox.textContent = descriptions[i] || '';
-    const centerEmoji = document.getElementById('centerEmoji');
-    if(slides[i].classList.contains('closing')){
+    // description: hide when closing
+    if(i === totalSlides - 1){ // closing
       descBox.style.display = 'none';
+      // show center emoji briefly
+      const centerEmoji = document.getElementById('centerEmoji');
       centerEmoji.classList.remove('show');
       setTimeout(()=> centerEmoji.classList.add('show'), 40);
-      setTimeout(()=> centerEmoji.classList.remove('show'), 600);
+      setTimeout(()=> centerEmoji.classList.remove('show'), 700);
       createClosingBurst();
     } else {
       descBox.style.display = 'block';
+      descBox.textContent = descriptions[i] || '';
     }
     current = i;
   } else {
-    // Mobile: still update dot highlight & description; ensure the proper slide is highlighted (but grid displays many)
-    if(i<0) i = mainCount - 1;
-    if(i>=mainCount) i = 0;
-    dots.forEach((d,idx)=> d.classList.toggle('active', idx===i));
-    descBox.textContent = descriptions[i] || '';
-    current = i;
-    // for clarity, mark the slide visually active
+    // Mobile: grid mode. keep grid visible but highlight the chosen index and update desc.
     slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
+    if(i === totalSlides - 1){
+      descBox.style.display = 'none';
+      const centerEmoji = document.getElementById('centerEmoji');
+      centerEmoji.classList.remove('show');
+      setTimeout(()=> centerEmoji.classList.add('show'), 40);
+      setTimeout(()=> centerEmoji.classList.remove('show'), 700);
+      createClosingBurst();
+    } else {
+      descBox.style.display = 'block';
+      descBox.textContent = descriptions[i] || '';
+    }
+    const dotIndex = i < mainCount ? i : mainCount - 1;
+    dots.forEach((d,idx)=> d.classList.toggle('active', idx===dotIndex));
+    current = i;
   }
 }
 
-function next(){ show((current+1)%mainCount) }
-function prev(){ show((current-1+mainCount)%mainCount) }
+function next(){ show((current + 1) % totalSlides); }
+function prev(){ show((current - 1 + totalSlides) % totalSlides); }
 
 // hook fixed buttons
 document.getElementById('fixedNext').addEventListener('click', next);
 document.getElementById('fixedPrev').addEventListener('click', prev);
 
-// keyboard
+// keyboard navigation
 document.addEventListener('keydown', e=>{
-  if(e.key==='ArrowRight') next();
-  if(e.key==='ArrowLeft') prev();
+  if(e.key === 'ArrowRight') next();
+  if(e.key === 'ArrowLeft') prev();
 });
 
 // init
