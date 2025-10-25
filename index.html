@@ -20,7 +20,7 @@ body{
   background:var(--bg-grad);
   color:var(--hot);
   -webkit-font-smoothing:antialiased;
-  overflow:auto; /* page scroll allowed */
+  overflow:auto;
 }
 
 /* Page + card */
@@ -59,6 +59,7 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 }
 .music-btn.playing{background:var(--hot)}
 
+/* Slider box (1:1) */
 .slider-container{
   width:100%; aspect-ratio:1/1; border-radius:16px;
   border:3px solid var(--pink); background:#fff; overflow:hidden; margin:14px auto 6px;
@@ -71,11 +72,11 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 .slide.active{opacity:1}
 .slide img{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px}
 
+/* double photos (desktop) */
 .slide.double{display:flex;gap:8px;padding:8px}
 .slide.double img{width:50%;height:100%;object-fit:cover;border-radius:10px}
-@media(max-width:520px){ .slide.double{flex-direction:column}.slide.double img{width:50%;height:100%} }
 
-/* closing (full box) */
+/* closing (full) */
 .slide.closing{display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#ff9ad6,#ffd6a5);color:#fff;padding:0;margin:0;border-radius:0}
 .closing-inner{padding:28px 20px;text-align:center;width:100%}
 .closing-inner h3{font-size:30px;margin:0 0 6px 0;font-weight:800}
@@ -100,7 +101,7 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 .falling-emoji{position:fixed;top:-8vh;pointer-events:none;font-size:18px;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(120vh) rotate(360deg);opacity:0}}
 
-/* Fixed (outside) arrows — cute style, not obtrusive */
+/* Fixed (outside) arrows */
 .fixed-arrow{
   position:fixed; width:54px; height:54px; border-radius:50%;
   background:rgba(255,255,255,0.96); border:3px solid var(--pink);
@@ -112,11 +113,44 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 #fixedPrev{left:18px;bottom:18px}
 #fixedNext{right:18px;bottom:18px}
 
-/* reduce size on small screens so they don't block content on edges */
-@media(max-width:520px){
+/* MOBILE LAYOUT: show grid 2x2 inside slider-container */
+@media (max-width:520px){
+  /* make slider a grid so all photo slides (non-closing) appear as 2x2 */
+  .slider{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 1fr;
+    gap:8px;
+    padding:8px;
+    align-items:stretch;
+  }
+  /* show all slides (not absolute) */
+  .slide{
+    position:relative;
+    opacity:1 !important;
+    transition:none;
+    border-radius:12px;
+    overflow:hidden;
+    height:100%;
+  }
+  /* grid behaviour: non-closing slides will fill grid cells */
+  /* ensure double slides (desktop two-photo) also behave nicely */
+  .slide.double{display:block;padding:0}
+  .slide.double img{width:100%;height:100%;object-fit:cover;border-radius:10px}
+  /* make closing slide full-width under grid */
+  .slide.closing{
+    grid-column: 1 / -1;
+    height:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+  }
+  .slide img{height:100%;border-radius:10px}
+  /* adjust card spacing so desc is visible after grid */
+  .card{padding-bottom:120px}
+  .desc-below{font-size:15px;margin-top:14px}
   .fixed-arrow{width:44px;height:44px;font-size:18px;border-width:2px}
-  .card{padding-bottom:110px} /* extra space so desc readable */
-  .desc-below{font-size:15px}
 }
 
 /* subtle rounded page container look */
@@ -150,31 +184,30 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 
       <div class="slider-container" id="sliderContainer" aria-roledescription="carousel">
         <div class="slider" id="slider">
-          <div class="slide active"><img src="img1.jpeg" alt="Foto 1" loading="lazy"></div>
+          <!-- note: these slides will form grid on small screens -->
+          <div class="slide"><img src="img1.jpeg" alt="Foto 1" loading="lazy"></div>
 
-          <div class="slide double">
-            <img src="img2a.jpeg" alt="Foto 2a" loading="lazy">
-            <img src="img2b.jpeg" alt="Foto 2b" loading="lazy">
-          </div>
+          <div class="slide"><img src="img2a.jpeg" alt="Foto 2a" loading="lazy"></div>
+
+          <div class="slide"><img src="img2b.jpeg" alt="Foto 2b" loading="lazy"></div>
 
           <div class="slide"><img src="img3.jpeg" alt="Foto 3" loading="lazy"></div>
+
           <div class="slide"><img src="img4.jpeg" alt="Foto 4" loading="lazy"></div>
 
-          <div class="slide double">
-            <img src="img5a.jpeg" alt="Foto 5a" loading="lazy">
-            <img src="img5b.jpeg" alt="Foto 5b" loading="lazy">
-          </div>
+          <div class="slide"><img src="img5a.jpeg" alt="Foto 5a" loading="lazy"></div>
 
-          <div class="slide double">
-            <img src="img6a.jpeg" alt="Foto 6a" loading="lazy">
-            <img src="img6b.jpeg" alt="Foto 6b" loading="lazy">
-          </div>
+          <div class="slide"><img src="img5b.jpeg" alt="Foto 5b" loading="lazy"></div>
 
-          <!-- closing (full) -->
+          <div class="slide"><img src="img6a.jpeg" alt="Foto 6a" loading="lazy"></div>
+
+          <div class="slide"><img src="img6b.jpeg" alt="Foto 6b" loading="lazy"></div>
+
+          <!-- closing (full) placed to span full width on mobile -->
           <div class="slide closing">
             <div class="closing-inner">
               <h3>Makasihh yaahh meii ❤️</h3>
-              <p>udahh mauu bukaa web inii yahh dan udah mauu bacaa sampai akhir,  akuu bikin web inii khusus buat meisyaa dan niat akuu untuk ngehibur meisyaa bahkan kalau bisa bikin kamuu bahagia, maaf yahh mungkinn ini masih kurang menarik tapii akuu bust inii just only for YOUUUUU 🫶🫶❤️❤️</p>
+              <p>udahh mauu bukaa web inii yahh dan udah mauu bacaa sampai akhir, akuu bikin web inii khusus buat meisyaa dan niat akuu untuk ngehibur meisyaa bahkan kalau bisa bikin kamuu bahagia, maaf yahh mungkinn ini masih kurang menarik tapii akuu bust inii just only for YOUUUUU 🫶🫶❤️❤️</p>
             </div>
             <div id="centerEmoji" class="center-emoji">🥰</div>
           </div>
@@ -223,7 +256,7 @@ function switchPage(n){
   createHeartsBurst();
 }
 
-/* Slider basics */
+/* Slider basics (keeps functionality on desktop; mobile shows grid) */
 const slides = Array.from(document.querySelectorAll('.slide'));
 const dotsContainer = document.getElementById('dots');
 const descBox = document.getElementById('descBox');
@@ -238,42 +271,52 @@ const descriptions = [
   "" // penutup
 ];
 
-// generate dots
-slides.forEach((_,i)=>{
+/* generate dots only for the main slides count (excluding the closing slide for readability) */
+const mainSlidesCount = slides.length - 1; // last is closing
+for(let i=0;i<mainSlidesCount;i++){
   const d = document.createElement('span');
-  d.className = 'dot' + (i===0 ? ' active' : '');
+  d.className = i===0 ? 'dot active' : 'dot';
   d.addEventListener('click', ()=> show(i));
   dotsContainer.appendChild(d);
-});
+}
 const dots = Array.from(document.querySelectorAll('.dot'));
 
 function show(i){
-  if(i<0) i = slides.length - 1;
-  if(i>=slides.length) i = 0;
-  slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
-  dots.forEach((d,idx)=> d.classList.toggle('active', idx===i));
-  descBox.textContent = descriptions[i] || '';
-  // closing slide: hide desc and show center emoji briefly
-  const centerEmoji = document.getElementById('centerEmoji');
-  if(slides[i].classList.contains('closing')){
-    descBox.style.display = 'none';
-    centerEmoji.classList.remove('show');
-    setTimeout(()=> centerEmoji.classList.add('show'), 40);
-    setTimeout(()=> centerEmoji.classList.remove('show'), 600);
-    createClosingBurst();
+  // desktop behavior: show single slide
+  if(window.innerWidth > 520){
+    if(i<0) i = slides.length - 1;
+    if(i>=slides.length) i = 0;
+    slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
+    dots.forEach((d,idx)=> d.classList.toggle('active', idx===i));
+    descBox.textContent = descriptions[i] || '';
+    // closing slide behavior when reached
+    const centerEmoji = document.getElementById('centerEmoji');
+    if(slides[i].classList.contains('closing')){
+      descBox.style.display = 'none';
+      centerEmoji.classList.remove('show');
+      setTimeout(()=> centerEmoji.classList.add('show'), 40);
+      setTimeout(()=> centerEmoji.classList.remove('show'), 600);
+      createClosingBurst();
+    } else {
+      descBox.style.display = 'block';
+    }
+    current = i;
   } else {
-    descBox.style.display = 'block';
+    // mobile: grid mode. We still update dots highlight & description based on i
+    dots.forEach((d,idx)=> d.classList.toggle('active', idx===i));
+    descBox.textContent = descriptions[i] || '';
+    current = i;
   }
-  current = i;
 }
-function next(){ show((current+1)%slides.length) }
-function prev(){ show((current-1+slides.length)%slides.length) }
 
-// hook buttons (fixed outside)
+function next(){ show((current+1)%mainSlidesCount) }
+function prev(){ show((current-1+mainSlidesCount)%mainSlidesCount) }
+
+// hook fixed buttons
 document.getElementById('fixedNext').addEventListener('click', next);
 document.getElementById('fixedPrev').addEventListener('click', prev);
 
-// keyboard
+// keyboard (desktop)
 document.addEventListener('keydown', e=>{
   if(e.key==='ArrowRight') next();
   if(e.key==='ArrowLeft') prev();
