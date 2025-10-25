@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bunga Untuk Mei 🌸</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffd6ec, #d3b4f7, #b3ecff);
+  background-size: 300% 300%;
+  animation: bgmove 6s infinite alternate ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+}
+@keyframes bgmove {
+  0% {background-position: left;}
+  100% {background-position: right;}
+}
+
+/* Partikel kelap-kelip */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  animation: float 4s linear infinite;
+  pointer-events: none;
+}
+@keyframes float {
+  0% {transform: translateY(0) scale(1); opacity: 1;}
+  100% {transform: translateY(-200px) scale(0.3); opacity: 0;}
+}
+
+/* Bunga */
+.flower {
+  position: relative;
+  cursor: pointer;
+  transform: scale(1);
+  transition: transform 0.5s ease;
+}
+.flower:hover {
+  transform: scale(1.05);
+}
+
+/* Batang */
+.stem {
+  width: 8px;
+  height: 160px;
+  background: #4caf50;
+  border-radius: 4px;
+  position: relative;
+  transform-origin: bottom center;
+  transition: all 1s ease;
+}
+
+/* Daun */
+.leaf {
+  width: 60px;
+  height: 30px;
+  background: #66bb6a;
+  border-radius: 50% 50% 0 50%;
+  position: absolute;
+  left: -50px;
+  top: 70px;
+  transform-origin: right center;
+  opacity: 0;
+}
+.leaf.right {
+  left: 0;
+  top: 100px;
+  transform: rotate(40deg);
+}
+
+/* Kepala bunga */
+.flower-head {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  width: 100px;
+  height: 100px;
+  transition: transform 1s ease;
+}
+
+/* Kelopak */
+.petal {
+  width: 50px;
+  height: 80px;
+  background: radial-gradient(circle at top, #ff9ecf, #f06292);
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  left: 25px;
+  transform-origin: bottom center;
+  opacity: 0;
+  transition: all 0.8s ease;
+}
+
+.petal:nth-child(1) { transform: rotate(0deg) scale(0); }
+.petal:nth-child(2) { transform: rotate(45deg) scale(0); }
+.petal:nth-child(3) { transform: rotate(90deg) scale(0); }
+.petal:nth-child(4) { transform: rotate(135deg) scale(0); }
+.petal:nth-child(5) { transform: rotate(180deg) scale(0); }
+.petal:nth-child(6) { transform: rotate(225deg) scale(0); }
+.petal:nth-child(7) { transform: rotate(270deg) scale(0); }
+.petal:nth-child(8) { transform: rotate(315deg) scale(0); }
+
+/* Tengah bunga */
+.center {
+  width: 40px;
+  height: 40px;
+  background: radial-gradient(circle, #fff176, #fbc02d);
+  border-radius: 50%;
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  opacity: 0;
+  transition: opacity 1s ease, transform 1s ease;
+  box-shadow: 0 0 20px rgba(255, 255, 0, 0.4);
+}
+
+/* Popup */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease;
+}
+.popup.show {
+  opacity: 1;
+  pointer-events: all;
+}
+.popup-content {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  animation: pop 1s ease;
+}
+@keyframes pop {
+  from {transform: scale(0.5); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
+}
+.popup-content img {
+  width: 250px;
+  border-radius: 15px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  margin-bottom: 10px;
+}
+button {
+  background: #ff80ab;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+button:hover {
+  background: #f06292;
+}
+
+/* Label petunjuk */
+.tap-text {
+  position: absolute;
+  bottom: 50px;
+  font-size: 1rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.3);
+  padding: 10px 20px;
+  border-radius: 30px;
+  animation: fade 2s infinite alternate;
+}
+@keyframes fade {
+  from {opacity: 1;}
+  to {opacity: 0.5;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Teks petunjuk -->
+<div class="tap-text">✨Sentuh bunganya✨</div>
+
+<!-- Bunga -->
+<div class="flower" id="flower">
+  <div class="stem">
+    <div class="leaf"></div>
+    <div class="leaf right"></div>
+    <div class="flower-head">
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="petal"></div>
+      <div class="center"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Popup -->
+<div class="popup" id="popup">
+  <div class="popup-content">
+    <img src="foto.jpeg" alt="Kebersamaan indah">
+    <p>SUPRISEE CANTIKK!!<br>Semoga kamu sukaa yaa sama apa yang udah aku bikin,<br>hope u really enjoy your day🫶🏻💕</p>
+    <button onclick="closePopup()">Tutup</button>
+  </div>
+</div>
+
+<!-- Suara -->
+<audio id="bloomSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4dd87f0e34.mp3?filename=magical-bloom-117420.mp3"></audio>
+<audio id="bgm" src="https://cdn.pixabay.com/download/audio/2022/03/18/audio_18a52e6e67.mp3?filename=soft-piano-romantic-ambient-117542.mp3" loop></audio>
+
+<script>
+const flower = document.getElementById("flower");
+const popup = document.getElementById("popup");
+const sound = document.getElementById("bloomSound");
+const bgm = document.getElementById("bgm");
+
+flower.addEventListener("click", () => {
+  bgm.play();
+  sound.play();
+  bloomFlower();
+});
+
+function bloomFlower() {
+  document.querySelector(".flower-head").style.transform = "translateX(-50%) scale(1)";
+  document.querySelectorAll(".petal").forEach((p, i) => {
+    setTimeout(() => {
+      p.style.opacity = "1";
+      p.style.transform = `rotate(${i*45}deg) scale(1)`;
+    }, i * 200);
+  });
+  setTimeout(() => {
+    document.querySelector(".center").style.opacity = "1";
+    document.querySelector(".center").style.transform = "scale(1.1)";
+  }, 1500);
+  document.querySelectorAll(".leaf").forEach((l, i) => {
+    setTimeout(() => l.style.opacity = "1", i * 300);
+  });
+
+  // efek partikel
+  for (let i=0; i<25; i++) createParticle();
+
+  // tampilkan popup setelah animasi selesai
+  setTimeout(() => popup.classList.add("show"), 4000);
+}
+
+function createParticle() {
+  const p = document.createElement("div");
+  p.classList.add("particle");
+  p.style.left = `${Math.random() * 100}vw`;
+  p.style.top = `${50 + Math.random() * 50}vh`;
+  p.style.animationDuration = `${2 + Math.random() * 2}s`;
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 4000);
+}
+
+function closePopup() {
+  popup.classList.remove("show");
+  bgm.pause();
+}
+</script>
+
+</body>
+</html>
