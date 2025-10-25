@@ -12,17 +12,19 @@
   --bg-grad: linear-gradient(135deg,#ffe4ec,#e0d4ff,#d0f0ff);
   --card-bg: rgba(255,255,255,.98);
 }
-*{box-sizing:border-box}
-html,body{height:100%}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;width:100%;overflow-x:hidden}
 body{
-  margin:0;font-family:"Poppins",sans-serif;background:var(--bg-grad);color:var(--hot);
-  -webkit-font-smoothing:antialiased;overflow:auto;
+  font-family:"Poppins",sans-serif;
+  background:var(--bg-grad);
+  color:var(--hot);
+  -webkit-font-smoothing:antialiased;
 }
 
 /* Page + card */
-.page{min-height:100vh;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;opacity:0;transition:opacity .6s}
+.page{min-height:100vh;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;opacity:0;transition:opacity .6s ease}
 .page.show{display:flex;opacity:1}
-.card{width:92%;max-width:560px;background:var(--card-bg);border:4px solid var(--pink);border-radius:22px;padding:18px;box-shadow:0 12px 36px rgba(0,0,0,.08);position:relative;overflow:visible}
+.card{width:92%;max-width:560px;background:var(--card-bg);border:4px solid var(--pink);border-radius:22px;padding:18px;box-shadow:0 12px 36px rgba(0,0,0,.08);position:relative;overflow:hidden}
 
 /* Header */
 .header{margin-bottom:6px;text-align:center}
@@ -31,12 +33,13 @@ body{
 
 /* PIN page */
 .pin-row{display:flex;justify-content:center;margin-top:8px}
-input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-radius:12px;text-align:center;outline:none}
+input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-radius:12px;text-align:center;outline:none;width:100px}
 .btn{margin-top:12px;padding:10px 16px;border-radius:12px;border:none;background:var(--pink);color:#fff;font-weight:600;cursor:pointer}
 .btn:hover{transform:scale(1.03);background:var(--hot)}
 
 /* Music button */
-.music-btn{position:absolute; top:14px; right:18px; width:54px; height:54px; border-radius:50%; background:var(--pink); color:#fff; border:none; display:flex;align-items:center;justify-content:center;font-size:20px; cursor:pointer; box-shadow:0 8px 20px rgba(214,51,132,0.08);}
+.music-btn{position:absolute; top:14px; right:18px; width:54px; height:54px; border-radius:50%; background:var(--pink); color:#fff; border:none; display:flex;align-items:center;justify-content:center;font-size:20px; cursor:pointer; box-shadow:0 8px 20px rgba(214,51,132,0.08);transition:transform .2s}
+.music-btn:hover{transform:scale(1.05)}
 .music-btn.playing{background:var(--hot)}
 
 /* Slider container */
@@ -58,12 +61,12 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 /* single image */
 .slide img { width:100%; height:100%; object-fit:cover; border-radius:12px; display:block }
 
-/* double image (kiri kanan) */
+/* double image side-by-side */
 .slide.double{
   display:flex;
+  flex-direction:row;
   align-items:stretch;
   justify-content:space-between;
-  padding:0;
 }
 .slide.double .img-box{
   width:50%;
@@ -71,12 +74,15 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
   overflow:hidden;
 }
 .slide.double .img-box img{
-  width:100%; height:100%; object-fit:cover; display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
 }
 
 /* closing slide */
 .slide.closing{
-  position:relative !important;
+  position:relative;
   inset:0;
   display:flex;
   flex-direction:column;
@@ -86,54 +92,46 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
   color:#fff;
   padding:0;
   margin:0;
-  opacity: 1 !important;
-  z-index: 1 !important;
   border-radius:0;
 }
-.slide:not(.closing) { z-index: 2 !important; }
 .closing-inner{
   width:100%;
   padding:28px 20px;
   box-sizing:border-box;
   text-align:center;
 }
-.closing-inner h3{ font-size:30px; margin:0 0 8px 0; font-weight:800 }
+.closing-inner h3{ font-size:28px; margin:0 0 8px 0; font-weight:800 }
 .closing-inner p{ margin:0; color:rgba(255,255,255,0.95); line-height:1.6; word-break:break-word; }
-
 .center-emoji{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.6); font-size:56px; opacity:0; transition:transform .25s ease,opacity .25s; pointer-events:none; }
 .center-emoji.show{ opacity:1; transform:translate(-50%,-50%) scale(1) }
 
+/* dots + desc */
 .controls-wrapper{ width:100%; display:flex; flex-direction:column; align-items:center; margin-top:12px; gap:10px }
 .controls{ display:flex; gap:8px; justify-content:center }
 .dot{ width:12px; height:12px; border-radius:50%; background:#f8c8e8; cursor:pointer; transition:transform .12s,background .12s }
 .dot.active{ background:var(--hot); transform:scale(1.3) }
 .desc-below{ width:92%; text-align:left; color:var(--hot); font-weight:600; font-size:16px; line-height:1.6; margin:0 auto }
 
+/* Floating emojis */
 .falling-emoji{ position:fixed; top:-8vh; pointer-events:none; font-size:18px; animation:fall linear forwards}
 @keyframes fall{ to{ transform:translateY(120vh) rotate(360deg); opacity:0 } }
 
+/* fixed arrows */
 .fixed-arrow{ position:fixed; width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,0.96); border:3px solid var(--pink); display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--hot); box-shadow:0 12px 28px rgba(214,51,132,0.06); cursor:pointer; z-index:120; transition:transform .15s,opacity .15s; }
 .fixed-arrow:hover{ transform:scale(1.05) }
 #fixedPrev{ left:18px; bottom:18px }
 #fixedNext{ right:18px; bottom:18px }
 
-@media(max-width:520px){
+/* RESPONSIVE */
+@media(max-width:600px){
   .card{ padding-bottom:120px }
   .desc-below{ font-size:15px }
   .fixed-arrow{ width:44px; height:44px; font-size:18px; border-width:2px }
-}
-
-.hidden{ display:none !important }
-
-#flowerCanvas{ max-width:100%; height:auto; display:block; margin:0 auto; cursor:default; transition:transform .25s ease; }
-#flowerCanvas:hover{ transform:scale(1.02); }
-
-/* Responsif tambahan agar slide tetap 1:1 di semua layar */
-@media (max-width: 600px) {
-  .slider-container { width: 100%; aspect-ratio: 1/1; }
-  .slide.double { flex-direction: row; }
-  .slide.double .img-box { width: 50%; height: 100%; }
-  .slide.double .img-box img { object-fit: cover; }
+  .slider-container{ aspect-ratio:auto; height:auto; }
+  .slide img{ height:auto; object-fit:contain; }
+  .slide.double{ flex-direction:row; }
+  .slide.double .img-box{ width:50%; height:auto; }
+  .slide.double .img-box img{ width:100%; height:auto; object-fit:cover; }
 }
 </style>
 </head>
@@ -161,36 +159,23 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
 
     <button class="music-btn" id="musicBtn" onclick="toggleMusic(music1,this)" aria-label="Putar musik">🎵</button>
 
-    <div class="slider-container" id="sliderContainer" aria-roledescription="carousel">
+    <div class="slider-container" id="sliderContainer">
       <div class="slider" id="slider">
-        <!-- slide 1 single -->
-        <div class="slide active"><img src="img1.jpeg" alt="Foto 1" loading="lazy"></div>
-
-        <!-- slide 2 double -->
+        <div class="slide active"><img src="img1.jpeg" alt="Foto 1"></div>
         <div class="slide double">
-          <div class="img-box"><img src="img2a.jpeg" alt="Foto 2a" loading="lazy"></div>
-          <div class="img-box"><img src="img2b.jpeg" alt="Foto 2b" loading="lazy"></div>
+          <div class="img-box"><img src="img2a.jpeg" alt="Foto 2a"></div>
+          <div class="img-box"><img src="img2b.jpeg" alt="Foto 2b"></div>
         </div>
-
-        <!-- slide 3 single -->
-        <div class="slide"><img src="img3.jpeg" alt="Foto 3" loading="lazy"></div>
-
-        <!-- slide 4 single -->
-        <div class="slide"><img src="img4.jpeg" alt="Foto 4" loading="lazy"></div>
-
-        <!-- slide 5 double -->
+        <div class="slide"><img src="img3.jpeg" alt="Foto 3"></div>
+        <div class="slide"><img src="img4.jpeg" alt="Foto 4"></div>
         <div class="slide double">
-          <div class="img-box"><img src="img5a.jpeg" alt="Foto 5a" loading="lazy"></div>
-          <div class="img-box"><img src="img5b.jpeg" alt="Foto 5b" loading="lazy"></div>
+          <div class="img-box"><img src="img5a.jpeg" alt="Foto 5a"></div>
+          <div class="img-box"><img src="img5b.jpeg" alt="Foto 5b"></div>
         </div>
-
-        <!-- slide 6 double -->
         <div class="slide double">
-          <div class="img-box"><img src="img6a.jpeg" alt="Foto 6a" loading="lazy"></div>
-          <div class="img-box"><img src="img6b.jpeg" alt="Foto 6b" loading="lazy"></div>
+          <div class="img-box"><img src="img6a.jpeg" alt="Foto 6a"></div>
+          <div class="img-box"><img src="img6b.jpeg" alt="Foto 6b"></div>
         </div>
-
-        <!-- CLOSING -->
         <div class="slide closing">
           <div class="closing-inner">
             <h3>Makasiii ya!!,Meii ❤️</h3> 
@@ -207,46 +192,26 @@ input.pin{font-size:18px;padding:8px 12px;border:2px solid var(--pink);border-ra
     </div>
 
     <div style="height:6px"></div>
-    <div style="font-size:12px;color:#666;position:relative">22-10-2025 Yogyakarta</div>
+    <div style="font-size:12px;color:#666;">22-10-2025 Yogyakarta</div>
   </div>
 </div>
 
-<!-- PAGE 3 -->
-<div id="page3" class="page">
-  <div class="card">
-    <div class="header">
-      <h2>Bunga yang indah untuk perempuan yang indah 🌸</h2>
-      <p>Love U Meiii!!💖</p>
-    </div>
+<!-- Fixed arrows -->
+<button id="fixedPrev" class="fixed-arrow">⟵</button>
+<button id="fixedNext" class="fixed-arrow">⟶</button>
 
-    <canvas id="flowerCanvas" width="600" height="520" style="border:3px solid var(--pink); border-radius:16px; display:block; margin:0 auto;"></canvas>
-
-    <button id="showPhotoBtn" class="btn" style="margin-top:16px;">Foto</button>
-
-    <div id="extraPhotoContainer" style="margin-top:14px; display:none;">
-      <img src="foto.jpeg" alt="Foto Tambahan" style="width:100%; border-radius:12px; box-shadow:0 8px 20px rgba(0,0,0,.08)">
-    </div>
-  </div>
-</div>
-
-<!-- Fixed arrows outside card -->
-<button id="fixedPrev" class="fixed-arrow" aria-label="Sebelumnya">⟵</button>
-<button id="fixedNext" class="fixed-arrow" aria-label="Selanjutnya">⟶</button>
-
-<!-- audio -->
 <audio id="music1" preload="auto" loop><source src="lagu1.mp3" type="audio/mpeg"></audio>
 
 <script>
-/* PIN */
 const correctPin = "1704";
 function checkPin(){
-  const val = document.getElementById('pinInput').value.trim();
-  if(val === correctPin){
-    document.getElementById('playBtn').style.display = 'inline-block';
+  const val=document.getElementById('pinInput').value.trim();
+  if(val===correctPin){
+    document.getElementById('playBtn').style.display='inline-block';
     alert("PIN benar! Klik 'Putar Musik & Masuk'.");
-  } else {
+  }else{
     alert("PIN salah, coba lagi ya 💕");
-    document.getElementById('playBtn').style.display = 'none';
+    document.getElementById('playBtn').style.display='none';
   }
 }
 function playAndNext(){
@@ -254,437 +219,78 @@ function playAndNext(){
   switchPage(2);
 }
 
-/* Slider */
-const slides = Array.from(document.querySelectorAll('.slide'));
-const dotsContainer = document.getElementById('dots');
-const descBox = document.getElementById('descBox');
-let current = 0;
-const descriptions = [
-"Kamu inget ini kan, meii? momen awal banget kita mulai deket waktu itu kamu bilang pengenn banget nonton film Komang, dan aku yang sebenarnya juga gugup tapi pura-pura santai langsung nawarin buat nemenin kamu. untung kamu mau, padahal aku udah takut duluan kalau kamu nolak, dan semuanya mulai berubah pelan-pelan enggaa ada yang berlebihan, tapi setiap obrolan, setiap jalan bareng, rasanya makin bikin nyaman kamuu meii💕, dan gimana hangatnya suasana waktu kita nonton bareng dan ituu awal kamuu tidur dipundak akuu kamu bilang lagi nyari tempat yang nyaman kan? dan kamu malah tidur di pundak aku 💖🥰, kalo itu yang kamu maksud nyaman maka sebaliknya bagi aku juga itu moment yang paling nyaman kayaknya sederhana banget yahh, tapi buat aku itu awal dari segalanya sejak hari itu, kamu pelan-pelan jadi tempat aku pulang, jadi alasan kenapa hari-hari aku kerasa lebih hidup dan bewarna meii 🫶🏻 ", 
-"Kamu masih ingat engga waktu kamu jadi MC di acara wisuda aku? sumpah, aku masih ngakak kalau ingat kamu bilang bajumu kebesaran, lucu banget!!! tapii dibalik ituu, suaramu cantik banget, halus, kaya orangnyaaa dan bikin semua orang merhatiin termasuk ibu aku meii, aku bangga banget lihat kamu di sana meii 🥰, dann makasihh yahh buat bunga nyaa i fell like im in love again with youuu meii 💖🥰💞 ", 
-"Owh iyaa inii waktuu akuu ke sekolahh teruss kitaa mauu ketemuu maluu-maluu kann 😂 akhirnya ketemu yahh mana fotoo kitaa pun maluu-maluu 😂 tauu enggaa pas meisyaa mujii akuu ganteng pass pake full hitamm salting tauu akunyaa makasih yahh cantikkk 🫶🏻💕✨",
- "Yang ini photobox pertama kita meii!! waktu itu kita berdua bingung mau pose apa lagi, sampai saling liat dan ketawaaa ketawaa Tapi justru karena itu, hasil fotonya jadi lucu bangettt 😭🤣 aku suka banget soalnya tiap lihat foto itu, aku ingat gimana canggungnya kita meii, tapi juga selalu ingett gimana nyamannya ada kamu di sebelahku 🫶🏻🥹", 
- "Meii, kamu masih ingat nggak waktu pertama kali kita nonton pss sleman barengg? walaupun bukan di dalam stadion, tapi rasanya sudah cukup buat jadi kenangan terindah buat aku kita sampai di maguwo cuman mauuu lihat suasananya, tapi jalannya malah ditutup karenaaa kerusuhann dan akhirnya kita cuma muter-muter tanpa tujuan tapiii tauu engga justru di situ aku merasa bahagia buangett, karena aku bareng kamuu meii dann di hari itu jugaa untuk pertama kalinya kamuu vlog pake hp akuu pakai hp akuu momen itu sederhana, tapi nggak akan pernah aku lupain meiii💖", 
- "Ini waktu konser origin!! akuuu masih inget banget kamu tiba-tiba jatuh gara-gara ada orang yang ganggu dan crowd surfing, jujur saat itu aku langsung kesel banget, rasanya pengin marah dan mukul orang ituu😠😤 karena kamu kesakitan, tapi bukannya ikut panik, kamu malah nenangin aku, bilang nggak apa-apa sambil senyum tipis waktu ituu 🥰, di situ aku makin sadar, kamu bukan cuma manis, tapi juga kuat dan bikin aku jatuh cinta berkali-kali💖🫶🏻, dan di saat itu juga aku nangkap air minum yang engga sengaja di lempar-lempar terus sambil bilang kamu haus engga?, disanaa aku ngerasaa keren bangett tau hahaha😏😎👌 ", "" // penutup (closing)
+const slides=Array.from(document.querySelectorAll('.slide'));
+const dotsContainer=document.getElementById('dots');
+const descBox=document.getElementById('descBox');
+let current=0;
+const descriptions=[
+"Kamu inget ini kan, meii? ... bewarna meii 🫶🏻 ",
+"Kamu masih ingat engga waktu kamu jadi MC ... 💖🥰💞 ",
+"Owh iyaa inii waktuu akuu ke sekolahh ... 🫶🏻💕✨",
+"Yang ini photobox pertama kita meii!! ... 🫶🏻🥹",
+"Meii, kamu masih ingat nggak waktu pertama kali kita nonton pss sleman ... 💖",
+"Ini waktu konser origin!! ... 😏😎👌",""
 ];
-const totalSlides = slides.length;
-const mainCount = totalSlides - 1;
-
+const totalSlides=slides.length;
+const mainCount=totalSlides-1;
 for(let i=0;i<mainCount;i++){
-  const d = document.createElement('span');
-  d.className = i===0 ? 'dot active' : 'dot';
-  d.addEventListener('click', ()=> show(i));
+  const d=document.createElement('span');
+  d.className=i===0?'dot active':'dot';
+  d.addEventListener('click',()=>show(i));
   dotsContainer.appendChild(d);
 }
-const dots = Array.from(document.querySelectorAll('.dot'));
-
+const dots=Array.from(document.querySelectorAll('.dot'));
 function show(i){
-  if(i < 0) i = totalSlides - 1;
-  if(i >= totalSlides) i = 0;
-  slides.forEach((s,idx)=> s.classList.toggle('active', idx===i));
-  if(i === totalSlides - 1){
-    descBox.style.display = 'none';
-    const centerEmoji = document.getElementById('centerEmoji');
+  if(i<0)i=totalSlides-1;
+  if(i>=totalSlides)i=0;
+  slides.forEach((s,idx)=>s.classList.toggle('active',idx===i));
+  if(i===totalSlides-1){
+    descBox.style.display='none';
+    const centerEmoji=document.getElementById('centerEmoji');
     centerEmoji.classList.remove('show');
-    setTimeout(()=> centerEmoji.classList.add('show'), 40);
-    setTimeout(()=> centerEmoji.classList.remove('show'), 700);
+    setTimeout(()=>centerEmoji.classList.add('show'),40);
+    setTimeout(()=>centerEmoji.classList.remove('show'),700);
     createClosingBurst();
-  } else {
-    descBox.style.display = 'block';
-    descBox.textContent = descriptions[i] || '';
+  }else{
+    descBox.style.display='block';
+    descBox.textContent=descriptions[i]||'';
   }
-  const dotIndex = i < mainCount ? i : mainCount - 1;
-  dots.forEach((d,idx)=> d.classList.toggle('active', idx===dotIndex));
-  current = i;
+  dots.forEach((d,idx)=>d.classList.toggle('active',idx===i));
+  current=i;
 }
-function next(){ show((current + 1) % totalSlides); }
-function prev(){ show((current - 1 + totalSlides) % totalSlides); }
+function next(){show((current+1)%totalSlides);}
+function prev(){show((current-1+totalSlides)%totalSlides);}
+document.getElementById('fixedNext').addEventListener('click',next);
+document.getElementById('fixedPrev').addEventListener('click',prev);
 
-document.getElementById('fixedNext').addEventListener('click', next);
-document.getElementById('fixedPrev').addEventListener('click', prev);
-
-document.addEventListener('keydown', e=>{
-  if(e.key === 'ArrowRight') next();
-  if(e.key === 'ArrowLeft') prev();
-});
-
-show(0);
-
-/* Falling emoji */
-let activeEmojis = 0;
-const MAX_DESKTOP = 8, MAX_MOBILE = 4;
-const isMobile = window.innerWidth <= 520 || /Mobi|Android/i.test(navigator.userAgent);
-const SPAWN_INTERVAL = isMobile ? 1400 : 900;
-let spawnTimer = null;
+let activeEmojis=0;
+const MAX_DESKTOP=8,MAX_MOBILE=4;
+const isMobile=window.innerWidth<=520||/Mobi|Android/i.test(navigator.userAgent);
+const SPAWN_INTERVAL=isMobile?1400:900;
+let spawnTimer=null;
 function spawnFallingEmoji(){
-  if(activeEmojis >= (isMobile?MAX_MOBILE:MAX_DESKTOP)) return;
+  if(activeEmojis>=(isMobile?MAX_MOBILE:MAX_DESKTOP))return;
   activeEmojis++;
-  const el = document.createElement('div');
-  el.textContent = Math.random()>0.6? '✨':'💖';
-  el.className = 'falling-emoji';
-  el.style.left = (5 + Math.random()*90) + '%';
-  el.style.fontSize = (12 + Math.random()*20) + 'px';
-  const dur = (3 + Math.random()*2);
-  el.style.animationDuration = dur + 's';
+  const el=document.createElement('div');
+  el.textContent=Math.random()>0.6?'✨':'💖';
+  el.className='falling-emoji';
+  el.style.left=(5+Math.random()*90)+'%';
+  el.style.fontSize=(12+Math.random()*20)+'px';
+  const dur=(3+Math.random()*2);
+  el.style.animationDuration=dur+'s';
   document.body.appendChild(el);
-  setTimeout(()=>{ el.remove(); activeEmojis--; }, (dur*1000)+200);
+  setTimeout(()=>{el.remove();activeEmojis--;},(dur*1000)+200);
 }
-function startEmojis(){ if(spawnTimer) return; spawnTimer = setInterval(spawnFallingEmoji, SPAWN_INTERVAL); }
-if(!isMobile) startEmojis(); else setTimeout(startEmojis, 1200);
-function createClosingBurst(){ for(let i=0;i<10;i++) setTimeout(spawnFallingEmoji, i*80); }
-function createHeartsBurst(){ for(let i=0;i<12;i++){ setTimeout(()=>{ const h=document.createElement('div'); h.textContent='💖'; h.style.position='fixed'; h.style.left=(10+Math.random()*80)+'%'; h.style.top=(30+Math.random()*40)+'%'; h.style.fontSize=(12+Math.random()*20)+'px'; h.style.opacity='0'; h.style.transition='all .6s ease'; document.body.appendChild(h); setTimeout(()=>{ h.style.opacity='1'; h.style.transform='translateY(-50px) scale(1.02)'; }, 80*i); setTimeout(()=>h.remove(), 1200 + i*40); }, i*60); } }
-
-/* music toggle */
-const music1 = document.getElementById('music1');
-function toggleMusic(audio, btn){
-  if(audio.paused){ audio.play().catch(()=>{}); btn.classList.add('playing'); }
-  else{ audio.pause(); btn.classList.remove('playing'); }
-}
-
-/* Page 3 tambahan (BUKET 3D-ish: mawar + lily) */
-
-/* append "Selanjutnya →" button into closing-inner (if not present already) */
-(function ensureToPage3Btn(){
-  const closingInner = document.querySelector('.slide.closing .closing-inner');
-  if(closingInner && !document.getElementById('toPage3Inline')){
-    const btn = document.createElement('button');
-    btn.id = 'toPage3Inline';
-    btn.className = 'btn';
-    btn.style.marginTop = '12px';
-    btn.textContent = 'Selanjutnya →';
-    btn.addEventListener('click', ()=> switchPage(3));
-    closingInner.appendChild(btn);
-  }
-})();
-
-const showPhotoBtn = document.getElementById('showPhotoBtn');
-const extraPhotoContainer = document.getElementById('extraPhotoContainer');
-showPhotoBtn.addEventListener('click', ()=>{
-  extraPhotoContainer.style.display = 'block';
-  extraPhotoContainer.scrollIntoView({behavior:'smooth'});
-});
-
-/* Advanced bouquet drawing: roses + lilies, pseudo-3D with gradients + layered petals */
-let flowerAnimating = false;
-function startFlowerAnimation(){
-  if(flowerAnimating) return;
-  flowerAnimating = true;
-
-  const canvas = document.getElementById('flowerCanvas');
-  const ctx = canvas.getContext('2d');
-
-  // adapt to device pixel ratio for crisper drawing
-  function resizeCanvas(){
-    const ratio = window.devicePixelRatio || 1;
-    const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
-    canvas.width = Math.round(w * ratio);
-    canvas.height = Math.round(h * ratio);
-    canvas.style.width = w + 'px';
-    canvas.style.height = h + 'px';
-    ctx.setTransform(ratio,0,0,ratio,0,0);
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-
-  const W = canvas.width / (window.devicePixelRatio || 1);
-  const H = canvas.height / (window.devicePixelRatio || 1);
-
-  // bouquet layout: three main flowers (center rose, left lily, right rose) + small buds + stems/leaves
-  const bouquet = {
-    center: { x: W*0.5, y: H*0.46, type: 'rose', size: 1.0, phase: 0, maxPhase: 140 },
-    left:   { x: W*0.28, y: H*0.58, type: 'lily', size: 0.85, phase: 0, maxPhase: 160 },
-    right:  { x: W*0.72, y: H*0.58, type: 'rose', size: 0.9, phase: 0, maxPhase: 150 },
-    buds: [
-      { x: W*0.4, y: H*0.7, phase:0, maxPhase:100},
-      { x: W*0.6, y: H*0.74, phase:0, maxPhase:110}
-    ],
-    leaves: []
-  };
-
-  // create some leaves for background
-  for(let i=0;i<6;i++){
-    bouquet.leaves.push({
-      x: W*(0.15 + Math.random()*0.7),
-      y: H*(0.55 + Math.random()*0.35),
-      rot: (Math.random()*40 - 20) * Math.PI/180,
-      scale: 0.7 + Math.random()*0.9,
-      sway: Math.random()*0.6
-    });
-  }
-
-  // helper: draw stem
-  function drawStem(x1,y1,x2,y2,thick,color){
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(x1,y1);
-    ctx.quadraticCurveTo((x1+x2)/2 + 10, (y1+y2)/2 + 30, x2,y2);
-    ctx.lineWidth = thick;
-    ctx.strokeStyle = color;
-    ctx.lineCap = 'round';
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // helper: draw a leaf with gradient
-  function drawLeaf(x,y,angle,scale,flip){
-    ctx.save();
-    ctx.translate(x,y);
-    ctx.rotate(angle);
-    ctx.scale(scale, scale * (flip?-1:1));
-    // shape
-    ctx.beginPath();
-    ctx.moveTo(0,0);
-    ctx.bezierCurveTo(-40,-20, -70,20, -120,0);
-    ctx.bezierCurveTo(-70,-10, -40,20, 0,0);
-    // gradient fill
-    const g = ctx.createLinearGradient(-120,0,0,0);
-    g.addColorStop(0,'#2a6f3b');
-    g.addColorStop(1,'#76c66a');
-    ctx.fillStyle = g;
-    ctx.fill();
-    // vein
-    ctx.beginPath();
-    ctx.moveTo(-110,0);
-    ctx.quadraticCurveTo(-60,-4, -10,0);
-    ctx.lineWidth = 1.2;
-    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // draw rose: layered curved petals using bezier/quadratic -> pseudo-3D using radial gradients
-  function drawRose(cx,cy,scale,open){
-    // base bud radial gradient for depth
-    const radial = ctx.createRadialGradient(cx,cy,2, cx,cy, 70*scale);
-    radial.addColorStop(0, 'rgba(255,220,230,1)');
-    radial.addColorStop(0.4, 'rgba(255,120,160,0.95)');
-    radial.addColorStop(1, 'rgba(150,40,80,0.9)');
-
-    // draw many small petals rotating outward
-    const petalCount = Math.round(18 * scale);
-    const maxR = 38 * scale + open*60*scale;
-    for(let i=0;i<petalCount;i++){
-      const t = i / petalCount;
-      const angle = t * Math.PI*2 + (open*0.2);
-      // inner offset: petals closer to center are smaller
-      const r = (5 + (maxR * (0.15 + 0.85*Math.pow(t,0.9))));
-      const px = cx + Math.cos(angle) * r * (0.6 + 0.4*Math.sin(t*Math.PI));
-      const py = cy + Math.sin(angle) * r * (0.48 + 0.45*Math.cos(t*Math.PI));
-      // petal shape
-      ctx.save();
-      ctx.translate(px,py);
-      ctx.rotate(angle + Math.PI/6);
-      const w = 20 * scale * (0.8 + 0.8*Math.sin(t*Math.PI));
-      const h = 30 * scale * (0.5 + open*0.5);
-      // gradient per petal for 3D
-      const g = ctx.createLinearGradient(-w/2,-h/2, w/2, h/2);
-      g.addColorStop(0, `rgba(${240 - i*3}, ${80 + i*2}, ${120 + i}, ${0.95 - t*0.25})`);
-      g.addColorStop(0.6, `rgba(${200 - i*2}, ${40 + i*2}, ${80 + i}, ${0.95 - t*0.25})`);
-      g.addColorStop(1, 'rgba(120,20,40,0.9)');
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.bezierCurveTo(w*0.2,-h*0.2, w*0.6,-h*0.7, 0,-h);
-      ctx.bezierCurveTo(-w*0.6,-h*0.7, -w*0.2,-h*0.2, 0,0);
-      ctx.fillStyle = g;
-      ctx.fill();
-      // subtle highlight
-      ctx.globalCompositeOperation = 'lighter';
-      ctx.fillStyle = 'rgba(255,255,255,0.03)';
-      ctx.fill();
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.restore();
-    }
-    // center
-    ctx.beginPath();
-    ctx.arc(cx,cy, 8*scale + open*6, 0, Math.PI*2);
-    ctx.fillStyle = radial;
-    ctx.fill();
-  }
-
-  // draw lily: 6 larger petals, elongated, with inner streaks and soft gradient
-  function drawLily(cx,cy,scale,open,rotation){
-    const petalCount = 6;
-    const baseR = 28*scale + open*80*scale;
-    for(let i=0;i<petalCount;i++){
-      const a = (i / petalCount) * Math.PI*2 + rotation;
-      const px = cx + Math.cos(a) * (baseR*0.2);
-      const py = cy + Math.sin(a) * (baseR*0.2);
-      ctx.save();
-      ctx.translate(px,py);
-      ctx.rotate(a + Math.PI/6);
-      const w = 28 * scale;
-      const h = 90 * scale * (0.6 + open*0.6);
-      const g = ctx.createLinearGradient(0,-h,0,h);
-      g.addColorStop(0, 'rgba(255,240,235,1)');
-      g.addColorStop(0.5, 'rgba(255,200,200,0.95)');
-      g.addColorStop(1, 'rgba(180,80,100,0.9)');
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.bezierCurveTo(w*0.6,-h*0.2, w*0.6,-h*0.8, 0,-h);
-      ctx.bezierCurveTo(-w*0.6,-h*0.8, -w*0.6,-h*0.2, 0,0);
-      ctx.fillStyle = g;
-      ctx.fill();
-      // veins
-      ctx.beginPath();
-      ctx.moveTo(0,-h*0.1);
-      ctx.quadraticCurveTo(0,-h*0.6, 0,-h);
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(120,40,60,0.15)';
-      ctx.stroke();
-      ctx.restore();
-    }
-    // center stamens
-    ctx.save();
-    ctx.translate(cx,cy);
-    for(let s=0;s<5;s++){
-      const a = s*(Math.PI*2/5) + rotation*0.5;
-      ctx.beginPath();
-      ctx.moveTo(0,0);
-      ctx.quadraticCurveTo(Math.cos(a)*8, Math.sin(a)*8, Math.cos(a)*14, Math.sin(a)*14);
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = 'rgba(80,40,30,0.7)';
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.arc(Math.cos(a)*16, Math.sin(a)*16, 3,0,Math.PI*2);
-      ctx.fillStyle = 'rgba(200,120,80,1)';
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  // draw bouquet wrapper and ribbon
-  function drawWrapper(cx,cy){
-    // stems cluster shadow
-    ctx.save();
-    ctx.beginPath();
-    ctx.ellipse(cx, cy+120, 90, 30, 0, 0, Math.PI*2);
-    ctx.fillStyle = 'rgba(0,0,0,0.06)';
-    ctx.fill();
-    ctx.restore();
-
-    // ribbon
-    ctx.save();
-    ctx.translate(cx,cy+90);
-    ctx.rotate(-0.12);
-    const g = ctx.createLinearGradient(-50,0,50,0);
-    g.addColorStop(0,'#ff6b9c');
-    g.addColorStop(1,'#d64a80');
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.moveTo(-70,0);
-    ctx.quadraticCurveTo(0,36, 70,0);
-    ctx.lineTo(70,20);
-    ctx.quadraticCurveTo(0,56, -70,20);
-    ctx.closePath();
-    ctx.fill();
-    ctx.restore();
-  }
-
-  // draw stems: from flowers down to bundle
-  function drawStems(){
-    const baseX = W*0.5;
-    const baseY = H*0.9;
-    // each main flower to base
-    drawStem(bouquet.center.x, bouquet.center.y + 30, baseX - 10, baseY, 6, '#2f6b3f');
-    drawStem(bouquet.left.x, bouquet.left.y + 20, baseX - 30, baseY + 10, 5, '#2f6b3f');
-    drawStem(bouquet.right.x, bouquet.right.y + 20, baseX + 10, baseY + 5, 5, '#2f6b3f');
-    // buds
-    bouquet.buds.forEach((b,i)=>{
-      drawStem(b.x, b.y + 8, baseX - 18 + i*18, baseY + 4, 4, '#2f6b3f');
-    });
-  }
-
-  // animation parameters
-  let frame = 0;
-  let rotation = 0;
-
-  function draw(){
-    // gentle fade background inside canvas
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    // soft backdrop vignette
-    const bg = ctx.createLinearGradient(0,0,0,H);
-    bg.addColorStop(0,'rgba(255,245,250,0.06)');
-    bg.addColorStop(1,'rgba(240,240,255,0.02)');
-    ctx.fillStyle = bg;
-    ctx.fillRect(0,0,canvas.width,canvas.height);
-
-    // draw leaves behind with slight sway
-    bouquet.leaves.forEach((l,idx)=>{
-      const sway = Math.sin(frame*0.01 + l.sway*2 + idx) * 0.06;
-      drawLeaf(l.x, l.y + Math.sin(frame*0.015 + idx)*4, l.rot + sway, l.scale*0.9, idx%2===0);
-    });
-
-    // draw stems (behind flowers)
-    drawStems();
-
-    // animate flowers phases (open gradually)
-    [bouquet.center, bouquet.left, bouquet.right].forEach(f=>{
-      if(f.phase < f.maxPhase) f.phase += 1.6;
-    });
-    bouquet.buds.forEach(b=>{ if(b.phase < b.maxPhase) b.phase += 1.8; });
-
-    // compute 'open' factor 0..1
-    const centerOpen = Math.min(1, bouquet.center.phase / bouquet.center.maxPhase);
-    const leftOpen = Math.min(1, bouquet.left.phase / bouquet.left.maxPhase);
-    const rightOpen = Math.min(1, bouquet.right.phase / bouquet.right.maxPhase);
-    const budOpens = bouquet.buds.map(b=> Math.min(1, b.phase / b.maxPhase));
-
-    // draw main flowers: draw order back->front for overlap
-    // left lily (behind slightly)
-    drawLily(bouquet.left.x, bouquet.left.y, bouquet.left.size, leftOpen, rotation*0.004 - 0.2);
-    // right rose (behind center slightly)
-    drawRose(bouquet.right.x, bouquet.right.y, bouquet.right.size, rightOpen);
-    // center rose (front)
-    drawRose(bouquet.center.x, bouquet.center.y, bouquet.center.size*1.05, centerOpen + 0.1);
-
-    // small buds
-    drawRose(bouquet.buds[0].x, bouquet.buds[0].y, 0.45, budOpens[0]);
-    drawLily(bouquet.buds[1].x, bouquet.buds[1].y, 0.45, budOpens[1], rotation*0.02);
-
-    // wrapper and ribbon overlay near stems
-    drawWrapper(W*0.5, H*0.86);
-
-    // tiny floating petals for a bit of magic
-    if(frame % 18 === 0){
-      for(let p=0;p<1;p++){
-        // occasionally draw a soft petal drifting (quick)
-        const px = bouquet.center.x + (Math.random()-0.5)*80;
-        const py = bouquet.center.y - 20;
-        ctx.save();
-        ctx.globalAlpha = 0.18;
-        ctx.fillStyle = 'rgba(255,170,200,0.9)';
-        ctx.beginPath();
-        ctx.ellipse(px + Math.random()*20, py + Math.random()*10 + frame*0.002, 8, 14, Math.random()*Math.PI, 0, Math.PI*2);
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    rotation += 0.0025;
-    frame++;
-    requestAnimationFrame(draw);
-  }
-
-  // start loop
-  draw();
-
-  // small hover effect: enlarge bouquet slightly
-  canvas.addEventListener('mouseenter', ()=> {
-    canvas.style.transform = 'scale(1.04)';
-  });
-  canvas.addEventListener('mouseleave', ()=> {
-    canvas.style.transform = '';
-  });
-}
-
-/* start flower when page 3 shown */
+function startEmojis(){if(spawnTimer)return;spawnTimer=setInterval(spawnFallingEmoji,SPAWN_INTERVAL);}
+if(!isMobile)startEmojis();else setTimeout(startEmojis,1200);
+function createClosingBurst(){for(let i=0;i<10;i++)setTimeout(spawnFallingEmoji,i*80);}
+function createHeartsBurst(){for(let i=0;i<12;i++){setTimeout(()=>{const h=document.createElement('div');h.textContent='💖';h.style.position='fixed';h.style.left=(10+Math.random()*80)+'%';h.style.top=(30+Math.random()*40)+'%';h.style.fontSize=(12+Math.random()*20)+'px';h.style.opacity='0';h.style.transition='all .6s ease';document.body.appendChild(h);setTimeout(()=>{h.style.opacity='1';h.style.transform='translateY(-50px) scale(1.02)';},80*i);setTimeout(()=>h.remove(),1200+i*40);},i*60);}}
+const music1=document.getElementById('music1');
+function toggleMusic(audio,btn){if(audio.paused){audio.play().catch(()=>{});btn.classList.add('playing');}else{audio.pause();btn.classList.remove('playing');}}
 function switchPage(n){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('show'));
   document.getElementById('page'+n).classList.add('show');
   createHeartsBurst();
-  if(n===3) startFlowerAnimation();
 }
 </script>
 </body>
